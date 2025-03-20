@@ -46,8 +46,12 @@ const MainSection = () => {
         const updatedRecords = [...records, newRecord]
         setRecords(updatedRecords)
         localStorage.setItem("tractorRecords", JSON.stringify(updatedRecords))
+        alert("Record saved successfully...!")
 
         // Reset form
+        setHours("")
+        setMinutes("")
+        setHourlyRate("")
         setName("")
         setAddress("")
         setNote("")
