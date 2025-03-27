@@ -61,9 +61,6 @@ const MainSection = () => {
         body: JSON.stringify(newRecord),
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to save record: ${response.statusText}`);
-      }
 
       const result = await response.json(); // Parse API response
       if (result.status) {
@@ -94,11 +91,9 @@ const MainSection = () => {
 
   // Fetch Records
   const fetchRecords = async () => {
-    setIsLoading(true);
     try {
       const response = await fetch(`${APIURI}records/getAllRecords`);
       const result = await response.json(); // Parse API response
-      console.log(result);
 
       if (result.status) {
         setRecords(result.data);
@@ -109,7 +104,6 @@ const MainSection = () => {
       console.error("Error fetching records:", error);
       toast.error("Failed to fetch records. Please try again.");
     }
-    setIsLoading(false);
   };
   // Delete Records
   const deleteRecord = async (id) => {
