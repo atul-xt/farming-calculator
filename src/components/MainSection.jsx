@@ -398,7 +398,7 @@ const MainSection = () => {
                   <div
                     key={record._id}
                     className={`p-4  border rounded-lg ${
-                      record.totalAmount - record.totalPaid >= 0
+                      record.totalAmount - record.totalPaid > 0
                         ? "bg-red-100"
                         : "bg-green-200"
                     }`}
