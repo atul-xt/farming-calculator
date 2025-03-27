@@ -44,7 +44,7 @@ const MainSection = () => {
       customerAddress: address,
       totalAmount: totalAmount,
       note: note,
-      date: new Date().toLocaleDateString(),
+      date: new Date(),
       hours: hours,
       minutes: minutes,
       perHourRate: hourlyRate,
