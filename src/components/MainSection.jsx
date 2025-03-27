@@ -61,12 +61,15 @@ const MainSection = () => {
         body: JSON.stringify(newRecord),
       });
 
-
       const result = await response.json(); // Parse API response
       if (result.status) {
         const updatedRecords = [...records, result.data]; // Use API response data
         setRecords(updatedRecords);
-        toast.success("Record saved successfully!");
+        toast.success(
+          language == "hi"
+            ? "रिकॉर्ड सफलतापूर्वक सहेजा गया!"
+            : "Record saved successfully!"
+        );
 
         // Reset form fields
         setHours("");
@@ -80,7 +83,11 @@ const MainSection = () => {
         setLabourCount("");
         setTotalPaid("");
       } else {
-        alert(`Error: ${result.message}`);
+        toast.error(
+          language == "hi"
+            ? `त्रुटि: ${result.message}`
+            : `Error: ${result.message}`
+        );
       }
     } catch (error) {
       console.error("Error saving record:", error);
@@ -101,8 +108,11 @@ const MainSection = () => {
         setRecords([]);
       }
     } catch (error) {
-      console.error("Error fetching records:", error);
-      toast.error("Failed to fetch records. Please try again.");
+      toast.error(
+        language == "hi"
+          ? "कुछ तकनीकी समस्या है, कुछ समय बाद प्रयास करें।"
+          : "Failed to fetch records. Please try again."
+      );
     }
   };
   // Delete Records
@@ -117,13 +127,24 @@ const MainSection = () => {
       if (result.status) {
         const updatedRecords = records.filter((record) => record._id !== id);
         setRecords(updatedRecords);
-        toast.success("Record deleted successfully!");
+        toast.success(
+          language == "hi"
+            ? "रिकॉर्ड सफलतापूर्वक हटा दिया गया!"
+            : "Record deleted successfully!"
+        );
       } else {
-        toast.error(`Error: ${result.message}`);
+        toast.error(
+          language == "hi"
+            ? `त्रुटि: ${result.message}`
+            : `Error: ${result.message}`
+        );
       }
     } catch (error) {
-      console.error("Error deleting record:", error);
-      toast.error("Failed to delete record. Please try again.");
+      toast.error(
+        language == "hi"
+          ? "कुछ तकनीकी समस्या है, कुछ समय बाद प्रयास करें।"
+          : "Failed to fetch records. Please try again."
+      );
     }
     setIsLoading(false);
   };
