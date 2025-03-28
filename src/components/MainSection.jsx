@@ -5,6 +5,13 @@ import { useSelector } from "react-redux";
 import { APIURI } from "../../Config/config";
 import { toast } from "react-toastify";
 const MainSection = () => {
+  // Check if user is logged in
+  const isLoggedIn = localStorage.getItem("IsLoggedIn");
+  if (!isLoggedIn) {
+    window.location.href = "/login"; // Redirect to login page if not logged in
+  }
+  // Language Toggle
+  const language = useSelector((state) => state.language.language);
   const [hours, setHours] = useState("");
   const [minutes, setMinutes] = useState("");
   const [hourlyRate, setHourlyRate] = useState("");
@@ -149,8 +156,6 @@ const MainSection = () => {
     setIsLoading(false);
   };
 
-  // Language Toggle
-  const language = useSelector((state) => state.language.language);
   return isloading ? (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 z-50">
       <div className="flex flex-col items-center">
@@ -248,18 +253,6 @@ const MainSection = () => {
                 />
               </div>
 
-              {/* <div className="space-y-2">
-                <label htmlFor="note" className="block text-sm font-medium">
-                  {language === "hi" ? "नोट (वैकल्पिक)" : "Note (Optional)"}
-                </label>
-                <textarea
-                  id="note"
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
-                  rows={3}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div> */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label htmlFor="hours" className="block text-sm font-medium">
@@ -388,7 +381,7 @@ const MainSection = () => {
 
       {/* Records Tab */}
       {activeTab === "records" && (
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-md p-2">
           <div className="mb-4">
             <h2 className="text-xl font-semibold mb-1">
               {language === "hi" ? "सहेजे गए रिकॉर्ड" : "Saved Records"}
@@ -412,76 +405,139 @@ const MainSection = () => {
                 {records.map((record) => (
                   <div
                     key={record._id}
-                    className={`p-4  border rounded-lg ${
+                    className={`p-4 border rounded-lg flex flex-col gap-1 ${
                       record.totalAmount - record.totalPaid > 0
                         ? "bg-red-100"
                         : "bg-green-200"
                     }`}
                   >
-                    <div className="flex justify-between items-start">
-                      <div className="w-full">
-                        <h3 className="font-semibold flex flex-wrap justify-between w-full pr-5">
-                          <span className="truncate">
-                            {record.customerName}
-                          </span>
-                          <span>
-                            {record.hours}{" "}
-                            {language === "hi" ? "घंटे" : "Hours"}{" "}
-                            {record.minutes}{" "}
-                            {language === "hi" ? "मिनट" : "Minutes"}
-                          </span>
-                        </h3>
-                        <p className="text-sm text-gray-500 truncate">
-                          {record.customerAddress}
-                        </p>
-                      </div>
+                    {/* First Row: Name */}
+                    <h3 className="font-semibold text-lg flex justify-between">
+                      {record.customerName}
+                      {/* Delete Button */}
                       <button
-                        className="p-1 text-gray-500 hover:text-red-500 focus:outline-none"
+                        className=" p-1 text-gray-500 hover:text-red-500 focus:outline-none"
                         onClick={() => deleteRecord(record._id)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
-                    </div>
-                    <div className="mt-2 w-full grid grid-cols-1 md:grid-cols-2   gap-2">
-                      <div className="flex flex-col gap-2 ">
-                        <p className="text-sm text-gray-500">
-                          {language === "hi" ? "मोबाइल नंबर " : "Mobile Number"}{" "}
-                          : {record.customerPhone}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {record?.date.split("T")[0]}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {language === "hi" ? "मज़दूर " : "Labours "} :{" "}
-                          {record.labourCount}
-                        </p>
-                      </div>
-                      <div className="flex flex-col gap-2 md:items-end">
-                        <p className="font-medium">
-                          {language === "hi"
-                            ? "कुल राशि : "
-                            : "Total Amount : "}
-                          ₹ {record.totalAmount}
-                        </p>
-                        <p className="font-medium">
-                          {language === "hi"
-                            ? "कुल जमा : "
-                            : "Total Deposit : "}
-                          ₹ {record?.totalPaid}
-                        </p>
-                        <p className="font-medium">
-                          {language === "hi"
-                            ? "बाकी राशि : "
-                            : "Remaining Amount : "}
-                          ₹ {record?.totalAmount - record?.totalPaid}
-                        </p>
-                      </div>
-                    </div>
-                    {record.note && (
-                      <p className="mt-2 text-sm border-t pt-2">
-                        {record.note}
+                    </h3>
+
+                    {/* Second Row: Address */}
+                    <p className="text-sm text-gray-500">
+                      {language === "en" ? "Address : " : "पता : "}{" "}
+                      {record.customerAddress}
+                    </p>
+
+                    {/* Third Row: Mobile Number */}
+                    <p className="text-sm text-gray-500">
+                      {language === "hi" ? "मोबाइल नंबर " : "Mobile Number"}:{" "}
+                      {record.customerPhone}
+                    </p>
+
+                    {/* Fourth Row: Date */}
+                    <p className="text-sm text-gray-500">
+                      {language === "hi" ? "दिनांक :" : "Date :"}{" "}
+                      {record?.date.split("T")[0]}
+                    </p>
+
+                    {/* Fifth Row: Hours & Minutes */}
+                    <p className="text-sm text-gray-500">
+                      {language === "hi" ? "समय :" : "Time :"} {record.hours}{" "}
+                      {language === "hi" ? "घंटे" : "Hours"} {record.minutes}{" "}
+                      {language === "hi" ? "मिनट" : "Minutes"}
+                    </p>
+
+                    {/* Sixth Row: Labours */}
+                    <p className="text-sm text-gray-500">
+                      {language === "hi" ? "मज़दूर " : "Labours"}:{" "}
+                      {record.labourCount}
+                    </p>
+                    {/* Seventh Row: PerHourrate */}
+                    <p className="text-sm text-gray-500">
+                      {language === "hi"
+                        ? "प्रति घंटा दर (₹)"
+                        : "Hourly Rate (₹)"}
+                      : {record.perHourRate}
+                    </p>
+
+                    {/* Payment Details */}
+                    <div className="mt-2 flex flex-col gap-1">
+                      <p className="font-medium">
+                        {language === "hi" ? "कुल राशि : " : "Total Amount : "}₹{" "}
+                        {record.totalAmount}
                       </p>
-                    )}
+                      <p className="font-medium">
+                        {language === "hi" ? "कुल जमा : " : "Total Deposit : "}₹{" "}
+                        {record?.totalPaid}
+                      </p>
+                      <p className="font-medium">
+                        {language === "hi"
+                          ? "बाकी राशि : "
+                          : "Remaining Amount : "}
+                        ₹ {record?.totalAmount - record?.totalPaid}
+                      </p>
+                    </div>
+                    {/* Share button */}
+                    {/* Share button */}
+                    <button
+                      className="mt-4 cursor-pointer py-1 px-3 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
+                      onClick={() => {
+                        const phoneNumber = "91" + record.customerPhone; // Ensure correct country code
+                        const scannerPhoto =
+                          "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png"; // Replace with actual scanner photo URL
+
+                        // Message in Hindi and English
+                        const message =
+                          language === "hi"
+                            ? `नमस्ते ${record.customerName},\n\n📍 *पता:* ${
+                                record.customerAddress
+                              }\n📞 *मोबाइल नंबर:* ${
+                                record.customerPhone
+                              }\n📅 *दिनांक:* ${
+                                record?.date.split("T")[0]
+                              }\n🕒 *समय:* ${record.hours} घंटे ${
+                                record.minutes
+                              } मिनट\n👷 *मज़दूर:* ${
+                                record.labourCount
+                              }\n💰 *प्रति घंटा दर:* ₹${
+                                record.perHourRate
+                              }\n💵 *कुल राशि:* ₹${
+                                record.totalAmount
+                              }\n💵 *कुल जमा:* ₹${
+                                record.totalPaid
+                              }\n💳 *बाकी राशि:* ₹${
+                                record.totalAmount - record.totalPaid
+                              }\n\n📷 *स्कैनर फोटो:* ${scannerPhoto}`
+                            : `Hello ${record.customerName},\n\n📍 *Address:* ${
+                                record.customerAddress
+                              }\n📞 *Mobile Number:* ${
+                                record.customerPhone
+                              }\n📅 *Date:* ${
+                                record?.date.split("T")[0]
+                              }\n🕒 *Time:* ${record.hours} Hours ${
+                                record.minutes
+                              } Minutes\n👷 *Labours:* ${
+                                record.labourCount
+                              }\n💰 *Hourly Rate:* ₹${
+                                record.perHourRate
+                              }\n💵 *Total Amount:* ₹${
+                                record.totalAmount
+                              }\n💵 *Total Deposit:* ₹${
+                                record.totalPaid
+                              }\n💳 *Remaining Amount:* ₹${
+                                record.totalAmount - record.totalPaid
+                              }\n\n📷 *Scanner Photo:* ${scannerPhoto}`;
+
+                        // Open WhatsApp with pre-filled message
+                        const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+                          message
+                        )}`;
+                        window.open(whatsappURL, "_blank");
+                      }}
+                    >
+                      {language === "hi" ? "शेयर करें" : "Share"}
+                    </button>
                   </div>
                 ))}
               </div>
