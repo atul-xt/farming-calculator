@@ -485,7 +485,7 @@ const MainSection = () => {
                       onClick={() => {
                         const phoneNumber = "91" + record.customerPhone; // Ensure correct country code
                         const scannerPhoto =
-                          "https://drive.google.com/file/d/14kk8r-2UnkV5ePSL1ZuNs9lbrJc4tapp/view?usp=drive_link"; // Replace with actual scanner photo URL
+                          "https://drive.google.com/file/d/1vZ4IvPvfsgrSK5Q5fW4yVI1J5HgfQWMo/view?usp=drive_link"; // Replace with actual scanner photo URL
                         // Message in Hindi and English
                         const message =
                           language === "hi"
