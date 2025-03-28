@@ -479,64 +479,76 @@ const MainSection = () => {
                       </p>
                     </div>
                     {/* Share button */}
-                    {/* Share button */}
-                    <button
-                      className="mt-4 cursor-pointer py-1 px-3 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
-                      onClick={() => {
-                        const phoneNumber = "91" + record.customerPhone; // Ensure correct country code
-                        const scannerPhoto =
-                          "https://drive.google.com/file/d/1vZ4IvPvfsgrSK5Q5fW4yVI1J5HgfQWMo/view?usp=drive_link"; // Replace with actual scanner photo URL
-                        // Message in Hindi and English
-                        const message =
-                          language === "hi"
-                            ? `नमस्ते ${record.customerName},\n\n📍 *पता:* ${
-                                record.customerAddress
-                              }\n📞 *मोबाइल नंबर:* ${
-                                record.customerPhone
-                              }\n📅 *दिनांक:* ${
-                                record?.date.split("T")[0]
-                              }\n🕒 *समय:* ${record.hours} घंटे ${
-                                record.minutes
-                              } मिनट\n👷 *मज़दूर:* ${
-                                record.labourCount
-                              }\n💰 *प्रति घंटा दर:* ₹${
-                                record.perHourRate
-                              }\n💵 *कुल राशि:* ₹${
-                                record.totalAmount
-                              }\n💵 *कुल जमा:* ₹${
-                                record.totalPaid
-                              }\n💳 *बाकी राशि:* ₹${
-                                record.totalAmount - record.totalPaid
-                              }\n\n📷 *स्कैनर फोटो:* ${scannerPhoto}`
-                            : `Hello ${record.customerName},\n\n📍 *Address:* ${
-                                record.customerAddress
-                              }\n📞 *Mobile Number:* ${
-                                record.customerPhone
-                              }\n📅 *Date:* ${
-                                record?.date.split("T")[0]
-                              }\n🕒 *Time:* ${record.hours} Hours ${
-                                record.minutes
-                              } Minutes\n👷 *Labours:* ${
-                                record.labourCount
-                              }\n💰 *Hourly Rate:* ₹${
-                                record.perHourRate
-                              }\n💵 *Total Amount:* ₹${
-                                record.totalAmount
-                              }\n💵 *Total Deposit:* ₹${
-                                record.totalPaid
-                              }\n💳 *Remaining Amount:* ₹${
-                                record.totalAmount - record.totalPaid
-                              }\n\n📷 *Scanner Photo:* ${scannerPhoto}`;
+                    {record.totalAmount - record.totalPaid > 0 && (
+                      <button
+                        className="mt-4 cursor-pointer py-1 px-3 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
+                        onClick={() => {
+                          const phoneNumber = "91" + record.customerPhone; // Ensure correct country code
+                          const scannerPhoto =
+                            "https://drive.google.com/file/d/1vZ4IvPvfsgrSK5Q5fW4yVI1J5HgfQWMo/view?usp=drive_link"; // Replace with actual scanner photo URL
+                          // Message in Hindi and English
+                          const message =
+                            language === "hi"
+                              ? `\nनमस्ते ${
+                                  record.customerName
+                                },\n\n📍 *पता:* ${
+                                  record.customerAddress
+                                }\n📞 *मोबाइल नंबर:* ${
+                                  record.customerPhone
+                                }\n📅 *दिनांक:* ${
+                                  record?.date.split("T")[0]
+                                }\n🕒 *समय:* ${record.hours} घंटे ${
+                                  record.minutes
+                                } मिनट\n👷 *मज़दूर:* ${
+                                  record.labourCount
+                                }\n💰 *प्रति घंटा दर:* ₹${
+                                  record.perHourRate
+                                }\n💵 *कुल राशि:* ₹${
+                                  record.totalAmount
+                                }\n💵 *कुल जमा:* ₹${
+                                  record.totalPaid
+                                }\n💳 *बाकी राशि:* ₹${
+                                  record.totalAmount - record.totalPaid
+                                }\n\n📞 *संपर्क करें:* ${
+                                  7024037367 + " या " + 7489469406
+                                }\n\n📷 *स्कैनर फोटो:* ${scannerPhoto}`
+                              : `Hello ${
+                                  record.customerName
+                                },\n\n📍 *Address:* ${
+                                  record.customerAddress
+                                }\n📞 *Mobile Number:* ${
+                                  record.customerPhone
+                                }\n📅 *Date:* ${
+                                  record?.date.split("T")[0]
+                                }\n🕒 *Time:* ${record.hours} Hours ${
+                                  record.minutes
+                                } Minutes\n👷 *Labours:* ${
+                                  record.labourCount
+                                }\n💰 *Hourly Rate:* ₹${
+                                  record.perHourRate
+                                }\n💵 *Total Amount:* ₹${
+                                  record.totalAmount
+                                }\n💵 *Total Deposit:* ₹${
+                                  record.totalPaid
+                                }\n💳 *Remaining Amount:* ₹${
+                                  record.totalAmount - record.totalPaid
+                                }\n\n📞 *Contact:* ${
+                                  7024037367 + " or " + 7489469406
+                                }
+                              \n\n📷 *Scanner Photo:* ${scannerPhoto}
+                              
+                              `;
 
-                        // Open WhatsApp with pre-filled message
-                        const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-                          message
-                        )}`;
-                        window.open(whatsappURL, "_blank");
-                      }}
-                    >
-                      {language === "hi" ? "शेयर करें" : "Share"}
-                    </button>
+                          // Open WhatsApp with pre-filled message
+                          const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+                            message
+                          )}`;
+                          window.open(whatsappURL, "_blank");
+                        }}
+                      >
+                        {language === "hi" ? "शेयर करें" : "Share"}
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
