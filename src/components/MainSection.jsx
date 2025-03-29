@@ -21,7 +21,10 @@ const MainSection = () => {
   const [totalPaid, setTotalPaid] = useState("");
   const [activeTab, setActiveTab] = useState("calculator");
   const [isloading, setIsLoading] = useState(false);
-
+  const [paymentMode, setPaymentMode] = useState("cash");
+  const [payments, setPayments] = useState([]);
+  const [isEditMode, setIsEditMode] = useState(false); // State to track if in edit mode
+  const [isEditRecord, setIsEditRecord] = useState(null); // State to track the record being edited
   // Form states
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -57,6 +60,7 @@ const MainSection = () => {
       perHourRate: hourlyRate,
       labourCount: labourCount || 0, // Ensure labourCount is always a number
       totalPaid: totalPaid || 0, // Ensure totalPaid is always a number
+      paymentmode: paymentMode,
     };
 
     try {
@@ -89,6 +93,7 @@ const MainSection = () => {
         setCustomerMobileNumber("");
         setLabourCount("");
         setTotalPaid("");
+        setPaymentMode("cash");
       } else {
         toast.error(
           language == "hi"
@@ -155,6 +160,162 @@ const MainSection = () => {
     }
     setIsLoading(false);
   };
+  const calculateTotalPaid = (payments) => {
+    const total = payments.reduce((sum, payment) => sum + payment.amount, 0);
+    return total;
+  };
+
+  const handleEdit = (recordToEdit) => {
+    setIsEditMode(true); // Set edit mode to true
+    setIsEditRecord(recordToEdit); // Set the record being edited
+    if (recordToEdit) {
+      setName(recordToEdit.customerName);
+      setAddress(recordToEdit.customerAddress);
+      setCustomerMobileNumber(recordToEdit.customerPhone);
+      setHours(recordToEdit.hours);
+      setMinutes(recordToEdit.minutes);
+      setHourlyRate(recordToEdit.perHourRate);
+      setLabourCount(recordToEdit.labourCount);
+
+      setTotalAmount(recordToEdit.totalAmount);
+      setPayments(recordToEdit.totalPayments || []);
+
+      setActiveTab("calculator"); // Switch to calculator tab for editing
+    }
+  };
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    if (!name || !address) {
+      alert("Please enter required fields!");
+      return;
+    }
+    setIsLoading(true);
+    const updatedRecord = {
+      customerName: name,
+      customerPhone: customerMobileNumber,
+      customerAddress: address,
+      totalAmount: totalAmount,
+      note: note,
+      date: new Date(),
+      hours: hours,
+      minutes: minutes,
+      perHourRate: hourlyRate,
+      labourCount: labourCount || 0, // Ensure labourCount is always a number
+      totalPaid: totalPaid || 0, // Ensure totalPaid is always a number
+      paymentmode: paymentMode,
+    };
+    try {
+      const response = await fetch(
+        `${APIURI}records/updateRecord/${isEditRecord._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedRecord),
+        }
+      );
+
+      const result = await response.json(); // Parse API response
+      if (result.status) {
+        const updatedRecords = records.map((record) =>
+          record._id === payments[0]._id ? result.data : record
+        );
+        setRecords(updatedRecords);
+        toast.success(
+          language == "hi"
+            ? "रिकॉर्ड सफलतापूर्वक अपडेट किया गया!"
+            : "Record updated successfully!"
+        );
+
+        // Reset form fields
+        setHours("");
+        setMinutes("");
+        setHourlyRate("");
+        setName("");
+        setAddress("");
+        setNote("");
+        setTotalAmount("");
+        setCustomerMobileNumber("");
+        setLabourCount("");
+        setTotalPaid("");
+        setPaymentMode("cash");
+      } else {
+        toast.error(
+          language == "hi"
+            ? `त्रुटि: ${result.message}`
+            : `Error: ${result.message}`
+        );
+      }
+    } catch (error) {
+      console.error("Error saving record:", error);
+      alert("Failed to save record. Please try again.");
+    }
+    setIsLoading(false);
+  };
+
+  const addPayment = async () => {
+    if (!totalPaid) {
+      toast.warn(
+        language == "hi"
+          ? "कृपया भुगतान जोड़ने के लिए राशि दर्ज करें!"
+          : "Please enter amount to add payment!"
+      );
+      return;
+    }
+
+    const newPayment = {
+      amount: totalPaid,
+      paymentmode: paymentMode,
+      date: new Date().toISOString(), // Ensure date is formatted correctly
+    };
+
+    try {
+      const response = await fetch(
+        `${APIURI}records/addPayment/${isEditRecord._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newPayment),
+        }
+      );
+
+      const result = await response.json(); // Parse API response
+
+      if (result.status) {
+        // Update the records list with the latest data from API response
+        const updatedRecords = records.map((record) =>
+          record._id === isEditRecord._id ? result.data : record
+        );
+        setRecords(updatedRecords);
+
+        toast.success(
+          language == "hi"
+            ? "भुगतान सफलतापूर्वक जोड़ा गया!"
+            : "Payment added successfully!"
+        );
+
+        // Update payments list only if needed
+        setPayments(result.data.payments || [...payments, newPayment]);
+        setTotalPaid(""); // Clear the input field after success
+      } else {
+        toast.error(
+          language == "hi"
+            ? `त्रुटि: ${result.message}`
+            : `Error: ${result.message}`
+        );
+      }
+    } catch (error) {
+      toast.error(
+        language == "hi"
+          ? "भुगतान जोड़ने में त्रुटि हुई!"
+          : "Error occurred while adding payment!"
+      );
+      console.error("Payment Error:", error);
+    }
+  };
 
   return isloading ? (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 z-50">
@@ -212,7 +373,10 @@ const MainSection = () => {
           </div>
 
           <div className="space-y-6">
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form
+              onSubmit={isEditMode ? handleUpdate : handleSubmit}
+              className="space-y-4"
+            >
               <div className="space-y-2">
                 <label htmlFor="name" className="block text-sm font-medium">
                   {language === "hi" ? "ग्राहक का नाम" : "Customer Name"}
@@ -351,6 +515,101 @@ const MainSection = () => {
               </div>
               <div className="space-y-2">
                 <label
+                  htmlFor="paymentMode"
+                  className="block text-sm font-medium"
+                >
+                  {language === "hi" ? "भुगतान विधि" : "Payment Mode"}
+                </label>
+                <select
+                  id="paymentMode"
+                  value={paymentMode}
+                  onChange={(e) => setPaymentMode(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="cash">
+                    {language === "hi" ? "नकद" : "Cash"}
+                  </option>
+                  <option value="online">
+                    {language === "hi" ? "ऑनलाइन" : "Online"}
+                  </option>
+                </select>
+              </div>
+              {isEditMode && (
+                <button
+                  type="button"
+                  className="mt-2 w-full flex justify-center items-center gap-2 cursor-pointer py-1 px-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
+                  onClick={addPayment}
+                >
+                  {language === "hi" ? "जमा करें" : "Add Payment"}
+                </button>
+              )}
+              {payments.length > 0 && (
+                <div className="space-y-2">
+                  <label
+                    htmlFor="labourCount"
+                    className="block text-sm font-medium"
+                  >
+                    {language === "hi" ? "पहले से जमा" : "Already Paid"}
+                  </label>
+                  <div className="border rounded-md overflow-y-auto  w-full  mx-auto">
+                    <table className="w-full border-collapse border border-gray-300">
+                      <thead>
+                        <tr className="bg-gray-100">
+                          <th className="border border-gray-300 px-4 py-2 text-left">
+                            {language === "hi" ? "राशि" : "Amount"}
+                          </th>
+                          <th className="border border-gray-300 px-4 py-2 text-left">
+                            {language === "hi" ? "भुगतान मोड" : "Payment Mode"}
+                          </th>
+                          <th className="border border-gray-300 px-4 py-2 text-left">
+                            {language === "hi" ? "तारीख" : "Date"}
+                          </th>
+                          <th className="border border-gray-300 px-4 py-2 text-center">
+                            {language === "hi" ? "क्रिया" : "Actions"}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {payments.map((payment, index) => (
+                          <tr key={index} className="border-b">
+                            <td className="border border-gray-300 px-4 py-2">
+                              {payment.amount}
+                            </td>
+                            <td className="border border-gray-300 px-4 py-2">
+                              {payment.paymentmode}
+                            </td>
+                            <td className="border border-gray-300 px-4 py-2">
+                              {new Date(payment.date).toLocaleDateString()}
+                            </td>
+                            <td className="border border-gray-300 px-4 py-2 text-center">
+                              <button
+                                type="button"
+                                className="p-1 text-gray-500 hover:text-red-500 focus:outline-none"
+                                onClick={() => {}}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+
+                    <div className="flex items-center gap-2">
+                      <div className="w-full flex justify-between items-center px-3 py-2  border-b ">
+                        {language === "hi" ? "कुल जमा" : "Total Paid"}:{" "}
+                        <span className="font-bold ">
+                          {" "}
+                          {calculateTotalPaid(payments)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <label
                   htmlFor="labourCount"
                   className="block text-sm font-medium"
                 >
@@ -360,7 +619,11 @@ const MainSection = () => {
                   id="rate"
                   type="number"
                   min={0}
-                  value={totalAmount - totalPaid}
+                  value={
+                    !isEditMode
+                      ? totalAmount - totalPaid
+                      : totalAmount - calculateTotalPaid(payments)
+                  }
                   // onChange={(e) =>
                   //   setTotalPaid(Number.parseInt(e.target.value) || 0)
                   // }
@@ -372,7 +635,13 @@ const MainSection = () => {
                 type="submit"
                 className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
-                {language === "hi" ? "सेव करें" : "Save Record"}
+                {language === "hi"
+                  ? isEditMode
+                    ? "अपडेट करें"
+                    : "सेव करें"
+                  : isEditMode
+                  ? "Update Record"
+                  : "Save Record"}
               </button>
             </form>
           </div>
@@ -406,7 +675,9 @@ const MainSection = () => {
                   <div
                     key={record._id}
                     className={`p-4 border rounded-lg flex flex-col gap-1 ${
-                      record.totalAmount - record.totalPaid > 0
+                      record.totalAmount -
+                        calculateTotalPaid(record?.totalPayments || []) >
+                      0
                         ? "bg-red-100"
                         : "bg-green-200"
                     }`}
@@ -469,17 +740,21 @@ const MainSection = () => {
                       </p>
                       <p className="font-medium">
                         {language === "hi" ? "कुल जमा : " : "Total Deposit : "}₹{" "}
-                        {record?.totalPaid}
+                        {calculateTotalPaid(record?.totalPayments || [])}
                       </p>
                       <p className="font-medium">
                         {language === "hi"
                           ? "बाकी राशि : "
                           : "Remaining Amount : "}
-                        ₹ {record?.totalAmount - record?.totalPaid}
+                        ₹{" "}
+                        {record?.totalAmount -
+                          calculateTotalPaid(record?.totalPayments || [])}
                       </p>
                     </div>
                     {/* Share button */}
-                    {record.totalAmount - record.totalPaid > 0 && (
+                    {record.totalAmount -
+                      calculateTotalPaid(record?.totalPayments || []) >
+                      0 && (
                       <div className="flex flex-wrap md:flex-nowrap gap-2 justify-center items-center">
                         <button
                           className="mt-2 w-full md:w-1/2 flex justify-center items-center gap-2 cursor-pointer py-1 px-3 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
@@ -505,10 +780,13 @@ const MainSection = () => {
                                     record.perHourRate
                                   }\n💵 *कुल राशि:* ₹${
                                     record.totalAmount
-                                  }\n💵 *कुल जमा:* ₹${
-                                    record.totalPaid
-                                  }\n💳 *बाकी राशि:* ₹${
-                                    record.totalAmount - record.totalPaid
+                                  }\n💵 *कुल जमा:* ₹${calculateTotalPaid(
+                                    record?.totalPayments || []
+                                  )}\n💳 *बाकी राशि:* ₹${
+                                    record.totalAmount -
+                                    calculateTotalPaid(
+                                      record?.totalPayments || []
+                                    )
                                   }\n\n📞 *संपर्क करें:* 7024037367 या 7489469406\n\n📷 *स्कैनर फोटो:* ${scannerPhoto}`
                                 : `Hello ${
                                     record.customerName
@@ -526,10 +804,13 @@ const MainSection = () => {
                                     record.perHourRate
                                   }\n💵 *Total Amount:* ₹${
                                     record.totalAmount
-                                  }\n💵 *Total Deposit:* ₹${
-                                    record.totalPaid
-                                  }\n💳 *Remaining Amount:* ₹${
-                                    record.totalAmount - record.totalPaid
+                                  }\n💵 *Total Deposit:* ₹${calculateTotalPaid(
+                                    record?.totalPayments || []
+                                  )}\n💳 *Remaining Amount:* ₹${
+                                    record.totalAmount -
+                                    calculateTotalPaid(
+                                      record?.totalPayments || []
+                                    )
                                   }\n\n📞 *Contact:* 7024037367 or 7489469406\n\n📷 *Scanner Photo:* ${scannerPhoto}`;
 
                             // Format SMS URL with phone number and message
@@ -583,10 +864,13 @@ const MainSection = () => {
                                     record.perHourRate
                                   }\n💵 *कुल राशि:* ₹${
                                     record.totalAmount
-                                  }\n💵 *कुल जमा:* ₹${
-                                    record.totalPaid
-                                  }\n💳 *बाकी राशि:* ₹${
-                                    record.totalAmount - record.totalPaid
+                                  }\n💵 *कुल जमा:* ₹${calculateTotalPaid(
+                                    record?.totalPayments || []
+                                  )}\n💳 *बाकी राशि:* ₹${
+                                    record.totalAmount -
+                                    calculateTotalPaid(
+                                      record?.totalPayments || []
+                                    )
                                   }\n\n📞 *संपर्क करें:* 7024037367 या 7489469406\n\n📷 *स्कैनर फोटो:* ${scannerPhoto}`
                                 : `Hello ${
                                     record.customerName
@@ -604,10 +888,13 @@ const MainSection = () => {
                                     record.perHourRate
                                   }\n💵 *Total Amount:* ₹${
                                     record.totalAmount
-                                  }\n💵 *Total Deposit:* ₹${
-                                    record.totalPaid
-                                  }\n💳 *Remaining Amount:* ₹${
-                                    record.totalAmount - record.totalPaid
+                                  }\n💵 *Total Deposit:* ₹${calculateTotalPaid(
+                                    record?.totalPayments || []
+                                  )}\n💳 *Remaining Amount:* ₹${
+                                    record.totalAmount -
+                                    calculateTotalPaid(
+                                      record?.totalPayments || []
+                                    )
                                   }\n\n📞 *Contact:* 7024037367 or 7489469406\n\n📷 *Scanner Photo:* ${scannerPhoto}`;
 
                             const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
@@ -631,6 +918,29 @@ const MainSection = () => {
                             <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
                           </svg>
                           {language === "hi" ? "व्हाट्सऐप" : "Whatsapp"}
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleEdit(record);
+                          }}
+                          className="mt-2 w-full md:w-1/2 flex justify-center items-center gap-2 cursor-pointer py-1 px-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-pencil-icon lucide-pencil"
+                          >
+                            <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
+                            <path d="m15 5 4 4" />
+                          </svg>{" "}
+                          {language === "hi" ? "एडिट करें" : "Edit"}
                         </button>
                       </div>
                     )}
