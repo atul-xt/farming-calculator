@@ -709,7 +709,7 @@ const MainSection = () => {
                     {/* Fourth Row: Date */}
                     <p className="text-sm text-gray-500">
                       {language === "hi" ? "दिनांक :" : "Date :"}{" "}
-                      {record?.date.split("T")[0]}
+                      {new Date(record?.date).toLocaleDateString()}
                     </p>
 
                     {/* Fifth Row: Hours & Minutes */}
@@ -764,17 +764,17 @@ const MainSection = () => {
                               "https://drive.google.com/file/d/1vZ4IvPvfsgrSK5Q5fW4yVI1J5HgfQWMo/view?usp=drive_link";
                             const message =
                               language === "hi"
-                                ? `\nनमस्ते ${
+                                ? `\n\nनमस्ते ${
                                     record.customerName
                                   },\n\n📍 *पता:* ${
                                     record.customerAddress
                                   }\n📞 *मोबाइल नंबर:* ${
                                     record.customerPhone
-                                  }\n📅 *दिनांक:* ${
-                                    record?.date.split("T")[0]
-                                  }\n🕒 *समय:* ${record.hours} घंटे ${
-                                    record.minutes
-                                  } मिनट\n👷 *मज़दूर:* ${
+                                  }\n📅 *दिनांक:* ${new Date(
+                                    record?.date
+                                  ).toLocaleDateString()}\n🕒 *समय:* ${
+                                    record.hours
+                                  } घंटे ${record.minutes} मिनट\n👷 *मज़दूर:* ${
                                     record.labourCount
                                   }\n💰 *प्रति घंटा दर:* ₹${
                                     record.perHourRate
@@ -787,16 +787,18 @@ const MainSection = () => {
                                     calculateTotalPaid(
                                       record?.totalPayments || []
                                     )
-                                  }\n\n📞 *संपर्क करें:* 7024037367 या 7489469406\n\n📷 *स्कैनर फोटो:* ${scannerPhoto}`
+                                  }\n\n📞 *संपर्क करें:* 7024037367\n\n📷 *स्कैनर फोटो:* ${scannerPhoto}`
                                 : `Hello ${
                                     record.customerName
                                   },\n\n📍 *Address:* ${
                                     record.customerAddress
                                   }\n📞 *Mobile Number:* ${
                                     record.customerPhone
-                                  }\n📅 *Date:* ${
-                                    record?.date.split("T")[0]
-                                  }\n🕒 *Time:* ${record.hours} Hours ${
+                                  }\n📅 *Date:* ${new Date(
+                                    record?.date
+                                  ).toLocaleDateString()}\n🕒 *Time:* ${
+                                    record.hours
+                                  } Hours ${
                                     record.minutes
                                   } Minutes\n👷 *Labours:* ${
                                     record.labourCount
@@ -811,7 +813,7 @@ const MainSection = () => {
                                     calculateTotalPaid(
                                       record?.totalPayments || []
                                     )
-                                  }\n\n📞 *Contact:* 7024037367 or 7489469406\n\n📷 *Scanner Photo:* ${scannerPhoto}`;
+                                  }\n\n📞 *Contact:* 7024037367\n\n📷 *Scanner Photo:* ${scannerPhoto}`;
 
                             // Format SMS URL with phone number and message
                             const smsURL = `sms:${phoneNumber}?&body=${encodeURIComponent(
@@ -854,11 +856,11 @@ const MainSection = () => {
                                     record.customerAddress
                                   }\n📞 *मोबाइल नंबर:* ${
                                     record.customerPhone
-                                  }\n📅 *दिनांक:* ${
-                                    record?.date.split("T")[0]
-                                  }\n🕒 *समय:* ${record.hours} घंटे ${
-                                    record.minutes
-                                  } मिनट\n👷 *मज़दूर:* ${
+                                  }\n📅 *दिनांक:* ${new Date(
+                                    record?.date
+                                  ).toLocaleDateString()}\n🕒 *समय:* ${
+                                    record.hours
+                                  } घंटे ${record.minutes} मिनट\n👷 *मज़दूर:* ${
                                     record.labourCount
                                   }\n💰 *प्रति घंटा दर:* ₹${
                                     record.perHourRate
@@ -871,7 +873,7 @@ const MainSection = () => {
                                     calculateTotalPaid(
                                       record?.totalPayments || []
                                     )
-                                  }\n\n📞 *संपर्क करें:* 7024037367 या 7489469406\n\n📷 *स्कैनर फोटो:* ${scannerPhoto}`
+                                  }\n\n📞 *संपर्क करें:* 7024037367\n\n📷 *स्कैनर फोटो:* ${scannerPhoto}`
                                 : `Hello ${
                                     record.customerName
                                   },\n\n📍 *Address:* ${
@@ -895,7 +897,7 @@ const MainSection = () => {
                                     calculateTotalPaid(
                                       record?.totalPayments || []
                                     )
-                                  }\n\n📞 *Contact:* 7024037367 or 7489469406\n\n📷 *Scanner Photo:* ${scannerPhoto}`;
+                                  }\n\n📞 *Contact:* 7024037367\n\n📷 *Scanner Photo:* ${scannerPhoto}`;
 
                             const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
                               message
