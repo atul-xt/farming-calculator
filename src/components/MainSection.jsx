@@ -483,21 +483,9 @@ const MainSection = () => {
                       <button
                         className="mt-4 cursor-pointer py-1 px-3 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
                         onClick={() => {
-                          const upiId = "yatishprajapat88717@ibl"; // Replace with actual UPI ID
-                          const amount = record.totalAmount - record.totalPaid; // Remaining amount
-                          const payeeName = "Yatish Prajapat"; // Change this
-                          const txnRef = `TXN${Date.now()}`; // Unique transaction ID
-                          const note = "Payment Of Thresser"; // Transaction Note
-                          const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(
-                            payeeName
-                          )}&tr=${txnRef}&tn=${encodeURIComponent(
-                            note
-                          )}&am=${amount}&cu=INR`;
-
                           const phoneNumber = "91" + record.customerPhone; // Ensure correct country code
                           const scannerPhoto =
                             "https://drive.google.com/file/d/1vZ4IvPvfsgrSK5Q5fW4yVI1J5HgfQWMo/view?usp=drive_link"; // Replace with actual scanner photo URL
-
                           // Message in Hindi and English
                           const message =
                             language === "hi"
@@ -519,7 +507,11 @@ const MainSection = () => {
                                   record.totalAmount
                                 }\n💵 *कुल जमा:* ₹${
                                   record.totalPaid
-                                }\n💳 *बाकी राशि:* ₹${amount}\n\n📞 *संपर्क करें:* 7024037367 या 7489469406\n\n📷 *स्कैनर फोटो:* ${scannerPhoto}\n\n💳 *भुगतान लिंक:* ${upiLink}`
+                                }\n💳 *बाकी राशि:* ₹${
+                                  record.totalAmount - record.totalPaid
+                                }\n\n📞 *संपर्क करें:* ${
+                                  7024037367 + " या " + 7489469406
+                                }\n\n📷 *स्कैनर फोटो:* ${scannerPhoto}`
                               : `Hello ${
                                   record.customerName
                                 },\n\n📍 *Address:* ${
@@ -538,7 +530,14 @@ const MainSection = () => {
                                   record.totalAmount
                                 }\n💵 *Total Deposit:* ₹${
                                   record.totalPaid
-                                }\n💳 *Remaining Amount:* ₹${amount}\n\n📞 *Contact:* 7024037367 or 7489469406\n\n📷 *Scanner Photo:* ${scannerPhoto}\n\n💳 *Payment Link:* ${upiLink}`;
+                                }\n💳 *Remaining Amount:* ₹${
+                                  record.totalAmount - record.totalPaid
+                                }\n\n📞 *Contact:* ${
+                                  7024037367 + " or " + 7489469406
+                                }
+                              \n\n📷 *Scanner Photo:* ${scannerPhoto}
+                              
+                              `;
 
                           // Open WhatsApp with pre-filled message
                           const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
