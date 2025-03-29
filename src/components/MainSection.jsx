@@ -487,46 +487,48 @@ const MainSection = () => {
                             const phoneNumber = record.customerPhone; // No need for country code in SMS
                             const message =
                               language === "hi"
-                                ? `नमस्ते ${record.customerName},\n\n📍 पता: ${
+                                ? `\nनमस्ते ${
+                                    record.customerName
+                                  },\n\n📍 *पता:* ${
                                     record.customerAddress
-                                  }\n📞 मोबाइल नंबर: ${
+                                  }\n📞 *मोबाइल नंबर:* ${
                                     record.customerPhone
-                                  }\n📅 दिनांक: ${
+                                  }\n📅 *दिनांक:* ${
                                     record?.date.split("T")[0]
-                                  }\n🕒 समय: ${record.hours} घंटे ${
+                                  }\n🕒 *समय:* ${record.hours} घंटे ${
                                     record.minutes
-                                  } मिनट\n👷 मज़दूर: ${
+                                  } मिनट\n👷 *मज़दूर:* ${
                                     record.labourCount
-                                  }\n💰 प्रति घंटा दर: ₹${
+                                  }\n💰 *प्रति घंटा दर:* ₹${
                                     record.perHourRate
-                                  }\n💵 कुल राशि: ₹${
+                                  }\n💵 *कुल राशि:* ₹${
                                     record.totalAmount
-                                  }\n💵 कुल जमा: ₹${
+                                  }\n💵 *कुल जमा:* ₹${
                                     record.totalPaid
-                                  }\n💳 बाकी राशि: ₹${
+                                  }\n💳 *बाकी राशि:* ₹${
                                     record.totalAmount - record.totalPaid
-                                  }\n\n📞 संपर्क करें: 7024037367 या 7489469406`
+                                  }\n\n📞 *संपर्क करें:* 7024037367 या 7489469406\n\n📷 *स्कैनर फोटो:* ${scannerPhoto}`
                                 : `Hello ${
                                     record.customerName
-                                  },\n\n📍 Address: ${
+                                  },\n\n📍 *Address:* ${
                                     record.customerAddress
-                                  }\n📞 Mobile Number: ${
+                                  }\n📞 *Mobile Number:* ${
                                     record.customerPhone
-                                  }\n📅 Date: ${
+                                  }\n📅 *Date:* ${
                                     record?.date.split("T")[0]
-                                  }\n🕒 Time: ${record.hours} Hours ${
+                                  }\n🕒 *Time:* ${record.hours} Hours ${
                                     record.minutes
-                                  } Minutes\n👷 Labours: ${
+                                  } Minutes\n👷 *Labours:* ${
                                     record.labourCount
-                                  }\n💰 Hourly Rate: ₹${
+                                  }\n💰 *Hourly Rate:* ₹${
                                     record.perHourRate
-                                  }\n💵 Total Amount: ₹${
+                                  }\n💵 *Total Amount:* ₹${
                                     record.totalAmount
-                                  }\n💵 Total Deposit: ₹${
+                                  }\n💵 *Total Deposit:* ₹${
                                     record.totalPaid
-                                  }\n💳 Remaining Amount: ₹${
+                                  }\n💳 *Remaining Amount:* ₹${
                                     record.totalAmount - record.totalPaid
-                                  }\n\n📞 Contact: 7024037367 or 7489469406`;
+                                  }\n\n📞 *Contact:* 7024037367 or 7489469406\n\n📷 *Scanner Photo:* ${scannerPhoto}`;
 
                             // Format SMS URL with phone number and message
                             const smsURL = `sms:${phoneNumber}?&body=${encodeURIComponent(
