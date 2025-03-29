@@ -485,6 +485,8 @@ const MainSection = () => {
                           className="mt-2 w-full md:w-1/2 flex justify-center items-center gap-2 cursor-pointer py-1 px-3 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
                           onClick={() => {
                             const phoneNumber = record.customerPhone; // No need for country code in SMS
+                            const scannerPhoto =
+                              "https://drive.google.com/file/d/1vZ4IvPvfsgrSK5Q5fW4yVI1J5HgfQWMo/view?usp=drive_link";
                             const message =
                               language === "hi"
                                 ? `\nनमस्ते ${
