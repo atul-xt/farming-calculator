@@ -793,166 +793,226 @@ const MainSection = () => {
                       </p>
                     </div>
                     {/* Share button */}
-                    {record.totalAmount -
-                      calculateTotalPaid(record?.totalPayments || []) >
-                      0 && (
-                        <div className="flex flex-wrap md:flex-nowrap gap-2 justify-center items-center">
-                          <button
-                            className="mt-2 w-full md:w-1/2 flex justify-center items-center gap-2 cursor-pointer py-1 px-3 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
-                            onClick={() => {
-                              const phoneNumber = record.customerPhone; // No need for country code in SMS
-                              const scannerPhoto =
-                                "https://drive.google.com/file/d/1vZ4IvPvfsgrSK5Q5fW4yVI1J5HgfQWMo/view?usp=drive_link";
-                              const message =
-                                language === "hi"
-                                  ? `\n\nनमस्ते ${record.customerName
-                                  },\n\n📍 *पता:* ${record.customerAddress
-                                  }\n📞 *मोबाइल नंबर:* ${record.customerPhone
-                                  }\n📅 *दिनांक:* ${new Date(
-                                    record?.date
-                                  ).toLocaleDateString()}\n🕒 *समय:* ${record.hours
-                                  } घंटे ${record.minutes} मिनट\n👷 *मज़दूर:* ${record.labourCount
-                                  }\n💰 *प्रति घंटा दर:* ₹${record.perHourRate
-                                  }\n💵 *कुल राशि:* ₹${record.totalAmount
-                                  }\n💵 *कुल जमा:* ₹${calculateTotalPaid(
-                                    record?.totalPayments || []
-                                  )}\n💳 *बाकी राशि:* ₹${record.totalAmount -
-                                  calculateTotalPaid(
-                                    record?.totalPayments || []
-                                  )
-                                  }\n\n📞 *संपर्क करें:* 7024037367\n\n📷 *स्कैनर फोटो:* ${scannerPhoto}`
-                                  : `Hello ${record.customerName
-                                  },\n\n📍 *Address:* ${record.customerAddress
-                                  }\n📞 *Mobile Number:* ${record.customerPhone
-                                  }\n📅 *Date:* ${new Date(
-                                    record?.date
-                                  ).toLocaleDateString()}\n🕒 *Time:* ${record.hours
-                                  } Hours ${record.minutes
-                                  } Minutes\n👷 *Labours:* ${record.labourCount
-                                  }\n💰 *Hourly Rate:* ₹${record.perHourRate
-                                  }\n💵 *Total Amount:* ₹${record.totalAmount
-                                  }\n💵 *Total Deposit:* ₹${calculateTotalPaid(
-                                    record?.totalPayments || []
-                                  )}\n💳 *Remaining Amount:* ₹${record.totalAmount -
-                                  calculateTotalPaid(
-                                    record?.totalPayments || []
-                                  )
-                                  }\n\n📞 *Contact:* 7024037367\n\n📷 *Scanner Photo:* ${scannerPhoto}`;
+                    {
+                      <div className="flex flex-wrap md:flex-nowrap gap-2 justify-center items-center">
+                        <button
+                          className="mt-2 w-full md:w-1/2 flex justify-center items-center gap-2 cursor-pointer py-1 px-3 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
+                          onClick={() => {
+                            const phoneNumber = record.customerPhone; // No need for country code in SMS
+                            const scannerPhoto =
+                              "https://drive.google.com/file/d/1vZ4IvPvfsgrSK5Q5fW4yVI1J5HgfQWMo/view?usp=drive_link";
+                            const message =
+                              language === "hi"
+                                ? `\n\nनमस्ते ${record.customerName
+                                },\n\n📍 *पता:* ${record.customerAddress
+                                }\n📞 *मोबाइल नंबर:* ${record.customerPhone
+                                }\n📅 *दिनांक:* ${new Date(
+                                  record?.date
+                                ).toLocaleDateString()}\n🕒 *समय:* ${record.hours
+                                } घंटे ${record.minutes} मिनट\n👷 *मज़दूर:* ${record.labourCount
+                                }\n💰 *प्रति घंटा दर:* ₹${record.perHourRate
+                                }\n💵 *कुल राशि:* ₹${record.totalAmount
+                                }\n💵 *कुल जमा:* ₹${calculateTotalPaid(
+                                  record?.totalPayments || []
+                                )}\n💳 *बाकी राशि:* ₹${record.totalAmount -
+                                calculateTotalPaid(
+                                  record?.totalPayments || []
+                                )
+                                }\n\n📞 *संपर्क करें:* 7024037367\n\n📷 *स्कैनर फोटो:* ${scannerPhoto}`
+                                : `Hello ${record.customerName
+                                },\n\n📍 *Address:* ${record.customerAddress
+                                }\n📞 *Mobile Number:* ${record.customerPhone
+                                }\n📅 *Date:* ${new Date(
+                                  record?.date
+                                ).toLocaleDateString()}\n🕒 *Time:* ${record.hours
+                                } Hours ${record.minutes
+                                } Minutes\n👷 *Labours:* ${record.labourCount
+                                }\n💰 *Hourly Rate:* ₹${record.perHourRate
+                                }\n💵 *Total Amount:* ₹${record.totalAmount
+                                }\n💵 *Total Deposit:* ₹${calculateTotalPaid(
+                                  record?.totalPayments || []
+                                )}\n💳 *Remaining Amount:* ₹${record.totalAmount -
+                                calculateTotalPaid(
+                                  record?.totalPayments || []
+                                )
+                                }\n\n📞 *Contact:* 7024037367\n\n📷 *Scanner Photo:* ${scannerPhoto}`;
 
-                              // Format SMS URL with phone number and message
-                              const smsURL = `sms:${phoneNumber}?&body=${encodeURIComponent(
-                                message
-                              )}`;
+                            // Format SMS URL with phone number and message
+                            const smsURL = `sms:${phoneNumber}?&body=${encodeURIComponent(
+                              message
+                            )}`;
 
-                              // Open SMS app
-                              window.location.href = smsURL;
-                            }}
+                            // Open SMS app
+                            window.location.href = smsURL;
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-send-icon lucide-send"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              class="lucide lucide-send-icon lucide-send"
-                            >
-                              <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" />
-                              <path d="m21.854 2.147-10.94 10.939" />
-                            </svg>
-                            {language === "hi" ? "मैसेज" : "Message"}
-                          </button>
+                            <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" />
+                            <path d="m21.854 2.147-10.94 10.939" />
+                          </svg>
+                          {language === "hi" ? "मैसेज" : "Message"}
+                        </button>
 
-                          <button
-                            className="mt-2 w-full md:w-1/2 flex justify-center items-center gap-2 cursor-pointer py-1 px-3 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
-                            onClick={() => {
-                              const phoneNumber = "91" + record.customerPhone;
-                              const scannerPhoto =
-                                "https://drive.google.com/file/d/1vZ4IvPvfsgrSK5Q5fW4yVI1J5HgfQWMo/view?usp=drive_link";
-                              const message =
-                                language === "hi"
-                                  ? `\nनमस्ते ${record.customerName
-                                  },\n\n📍 *पता:* ${record.customerAddress
-                                  }\n📞 *मोबाइल नंबर:* ${record.customerPhone
-                                  }\n📅 *दिनांक:* ${new Date(
-                                    record?.date
-                                  ).toLocaleDateString()}\n🕒 *समय:* ${record.hours
-                                  } घंटे ${record.minutes} मिनट\n👷 *मज़दूर:* ${record.labourCount
-                                  }\n💰 *प्रति घंटा दर:* ₹${record.perHourRate
-                                  }\n💵 *कुल राशि:* ₹${record.totalAmount
-                                  }\n💵 *कुल जमा:* ₹${calculateTotalPaid(
-                                    record?.totalPayments || []
-                                  )}\n💳 *बाकी राशि:* ₹${record.totalAmount -
-                                  calculateTotalPaid(
-                                    record?.totalPayments || []
-                                  )
-                                  }\n\n📞 *संपर्क करें:* 7024037367\n\n📷 *स्कैनर फोटो:* ${scannerPhoto}`
-                                  : `Hello ${record.customerName
-                                  },\n\n📍 *Address:* ${record.customerAddress
-                                  }\n📞 *Mobile Number:* ${record.customerPhone
-                                  }\n📅 *Date:* ${record?.date.split("T")[0]
-                                  }\n🕒 *Time:* ${record.hours} Hours ${record.minutes
-                                  } Minutes\n👷 *Labours:* ${record.labourCount
-                                  }\n💰 *Hourly Rate:* ₹${record.perHourRate
-                                  }\n💵 *Total Amount:* ₹${record.totalAmount
-                                  }\n💵 *Total Deposit:* ₹${calculateTotalPaid(
-                                    record?.totalPayments || []
-                                  )}\n💳 *Remaining Amount:* ₹${record.totalAmount -
-                                  calculateTotalPaid(
-                                    record?.totalPayments || []
-                                  )
-                                  }\n\n📞 *Contact:* 7024037367\n\n📷 *Scanner Photo:* ${scannerPhoto}`;
+                        <button
+                          className="mt-2 w-full md:w-1/2 flex justify-center items-center gap-2 cursor-pointer py-1 px-3 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
+                          onClick={() => {
+                            const phoneNumber = "91" + record.customerPhone;
+                            const scannerPhoto =
+                              "https://drive.google.com/file/d/1vZ4IvPvfsgrSK5Q5fW4yVI1J5HgfQWMo/view?usp=drive_link";
+                            const message =
+                              language === "hi"
+                                ? `\nनमस्ते ${record.customerName
+                                },\n\n📍 *पता:* ${record.customerAddress
+                                }\n📞 *मोबाइल नंबर:* ${record.customerPhone
+                                }\n📅 *दिनांक:* ${new Date(
+                                  record?.date
+                                ).toLocaleDateString()}\n🕒 *समय:* ${record.hours
+                                } घंटे ${record.minutes} मिनट\n👷 *मज़दूर:* ${record.labourCount
+                                }\n💰 *प्रति घंटा दर:* ₹${record.perHourRate
+                                }\n💵 *कुल राशि:* ₹${record.totalAmount
+                                }\n💵 *कुल जमा:* ₹${calculateTotalPaid(
+                                  record?.totalPayments || []
+                                )}\n💳 *बाकी राशि:* ₹${record.totalAmount -
+                                calculateTotalPaid(
+                                  record?.totalPayments || []
+                                )
+                                }\n\n📞 *संपर्क करें:* 7024037367\n\n📷 *स्कैनर फोटो:* ${scannerPhoto}`
+                                : `Hello ${record.customerName
+                                },\n\n📍 *Address:* ${record.customerAddress
+                                }\n📞 *Mobile Number:* ${record.customerPhone
+                                }\n📅 *Date:* ${record?.date.split("T")[0]
+                                }\n🕒 *Time:* ${record.hours} Hours ${record.minutes
+                                } Minutes\n👷 *Labours:* ${record.labourCount
+                                }\n💰 *Hourly Rate:* ₹${record.perHourRate
+                                }\n💵 *Total Amount:* ₹${record.totalAmount
+                                }\n💵 *Total Deposit:* ₹${calculateTotalPaid(
+                                  record?.totalPayments || []
+                                )}\n💳 *Remaining Amount:* ₹${record.totalAmount -
+                                calculateTotalPaid(
+                                  record?.totalPayments || []
+                                )
+                                }\n\n📞 *Contact:* 7024037367\n\n📷 *Scanner Photo:* ${scannerPhoto}`;
 
-                              const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-                                message
-                              )}`;
-                              window.open(whatsappURL, "_blank");
-                            }}
+                            const whatsappURL = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(
+                              message
+                            )}`;
+                            window.open(whatsappURL, "_blank");
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-message-circle-icon lucide-message-circle"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="lucide lucide-message-circle-icon lucide-message-circle"
-                            >
-                              <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
-                            </svg>
-                            {language === "hi" ? "व्हाट्सऐप" : "Whatsapp"}
-                          </button>
-                          <button
-                            onClick={() => {
-                              handleEdit(record);
-                            }}
-                            className="mt-2 w-full md:w-1/2 flex justify-center items-center gap-2 cursor-pointer py-1 px-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
+                            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                          </svg>
+                          {language === "hi" ? "GB व्हाट्सऐप" : "GB Whatsapp"}
+                        </button>
+                        <button
+                          className="mt-2 w-full md:w-1/2 flex justify-center items-center gap-2 cursor-pointer py-1 px-3 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
+                          onClick={() => {
+                            const phoneNumber = "91" + record.customerPhone;
+                            const scannerPhoto =
+                              "https://drive.google.com/file/d/1vZ4IvPvfsgrSK5Q5fW4yVI1J5HgfQWMo/view?usp=drive_link";
+                            const message =
+                              language === "hi"
+                                ? `\nनमस्ते ${record.customerName
+                                },\n\n📍 *पता:* ${record.customerAddress
+                                }\n📞 *मोबाइल नंबर:* ${record.customerPhone
+                                }\n📅 *दिनांक:* ${new Date(
+                                  record?.date
+                                ).toLocaleDateString()}\n🕒 *समय:* ${record.hours
+                                } घंटे ${record.minutes} मिनट\n👷 *मज़दूर:* ${record.labourCount
+                                }\n💰 *प्रति घंटा दर:* ₹${record.perHourRate
+                                }\n💵 *कुल राशि:* ₹${record.totalAmount
+                                }\n💵 *कुल जमा:* ₹${calculateTotalPaid(
+                                  record?.totalPayments || []
+                                )}\n💳 *बाकी राशि:* ₹${record.totalAmount -
+                                calculateTotalPaid(
+                                  record?.totalPayments || []
+                                )
+                                }\n\n📞 *संपर्क करें:* 7024037367\n\n📷 *स्कैनर फोटो:* ${scannerPhoto}`
+                                : `Hello ${record.customerName
+                                },\n\n📍 *Address:* ${record.customerAddress
+                                }\n📞 *Mobile Number:* ${record.customerPhone
+                                }\n📅 *Date:* ${record?.date.split("T")[0]
+                                }\n🕒 *Time:* ${record.hours} Hours ${record.minutes
+                                } Minutes\n👷 *Labours:* ${record.labourCount
+                                }\n💰 *Hourly Rate:* ₹${record.perHourRate
+                                }\n💵 *Total Amount:* ₹${record.totalAmount
+                                }\n💵 *Total Deposit:* ₹${calculateTotalPaid(
+                                  record?.totalPayments || []
+                                )}\n💳 *Remaining Amount:* ₹${record.totalAmount -
+                                calculateTotalPaid(
+                                  record?.totalPayments || []
+                                )
+                                }\n\n📞 *Contact:* 7024037367\n\n📷 *Scanner Photo:* ${scannerPhoto}`;
+
+                            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+                              message
+                            )}`;
+                            window.open(whatsappURL, "_blank");
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-message-circle-icon lucide-message-circle"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              class="lucide lucide-pencil-icon lucide-pencil"
-                            >
-                              <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
-                              <path d="m15 5 4 4" />
-                            </svg>{" "}
-                            {language === "hi" ? "एडिट करें" : "Edit"}
-                          </button>
-                        </div>
-                      )}
+                            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                          </svg>
+                          {language === "hi" ? "व्हाट्सऐप" : "Whatsapp"}
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleEdit(record);
+                          }}
+                          className="mt-2 w-full md:w-1/2 flex justify-center items-center gap-2 cursor-pointer py-1 px-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-pencil-icon lucide-pencil"
+                          >
+                            <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
+                            <path d="m15 5 4 4" />
+                          </svg>{" "}
+                          {language === "hi" ? "एडिट करें" : "Edit"}
+                        </button>
+                      </div>
+                    }
                   </div>
                 ))}
               </div>
